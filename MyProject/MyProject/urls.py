@@ -15,17 +15,32 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.urls import re_path as url
 from django.conf import settings
 from django.conf.urls.static import static
+from django.views.static import serve
 from MyApp.views import *
 
 urlpatterns = [
+    path('', favicon_image_view, { 'document_root': settings.MEDIA_ROOT, }, name = 'image_upload'),
 	path('image_upload', favicon_image_view, name = 'image_upload'),
 	path('success', success, name = 'success'),
+    path('error_w', error_w, name = 'error_w'),
+
+    # url(r'^download/(?P<path>.*)$', serve, {'document_root':settings.MEDIA_ROOT}),
+    url(r'^static/(?P<path>.*)$', serve, { 'document_root': settings.STATIC_ROOT, }),
+    url(r'^media/(?P<path>.*)$', favicon_image_view, { 'document_root': settings.MEDIA_ROOT, }),
 ]
+# if settings.DEBUG:
+#         urlpatterns += static(settings.MEDIA_URL,
+#                               document_root=settings.MEDIA_ROOT)
+
+
+# START:for_download_tuto
 if settings.DEBUG:
-        urlpatterns += static(settings.MEDIA_URL,
-                              document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# END:for_download_tuto
 
 
 
